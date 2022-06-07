@@ -12,7 +12,9 @@ class UserService {
   }
 
   async find() {
-    const response = await models.User.findAll()
+    const response = await models.User.findAll({
+      as: ['customer']
+    })
     return response;
   }
 
