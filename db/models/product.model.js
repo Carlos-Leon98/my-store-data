@@ -1,10 +1,10 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
 
-const { USER_TABLE } = require('./user.models');
+const { CATEGORY_TABLE } = require('./category.model');
 
-const CUSTOMER_TABLE = 'customers';
+const PRODUCT_TABLE = 'products';
 
-const CustomerSchema = {
+const ProductSchema = {
   id: {
     allowNull: false,
     autoIncrement: true,
@@ -12,31 +12,34 @@ const CustomerSchema = {
     type: DataTypes.INTEGER
   },
   name: {
-    allowNull: false,
-    type: DataTypes.STRING
-  },
-  lastName: {
-    allowNull: false,
     type: DataTypes.STRING,
-    field: 'last_name'
+    unique: true,
+    allowNull: false
   },
-  phone: {
-    allowNull: false,
-    type: DataTypes.STRING
+  image: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   },
   createdAt: {
-    allowNull: false,
     type: DataTypes.DATE,
+    allowNull: false,
     field: 'created_at',
     defaultValue: Sequelize.NOW
   },
-  userId: {
-    field: 'user_id',
+  categoryId: {
+    field: 'category_id',
     allowNull: false,
     type: DataTypes.INTEGER,
-    unique: true,
     references: {
-      model: USER_TABLE,
+      model: CATEGORY_TABLE,
       key: 'id'
     },
     onUpdate: 'CASCADE',
@@ -44,23 +47,23 @@ const CustomerSchema = {
   }
 }
 
-class Customer extends Model {
+class Product extends Model {
   static associate(models) {
-    this.belongsTo(models.User, { as: 'user' })
+    this.belongsTo(models.Category, { as: 'category' })
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: CUSTOMER_TABLE,
-      modelName: 'Customer',
+      productTable: PRODUCT_TABLE,
+      modelName: 'Product',
       Timestamps: false
     }
   }
 }
 
 module.exports = {
-  CUSTOMER_TABLE,
-  CustomerSchema,
-  Customer
+  Product,
+  ProductSchema,
+  PRODUCT_TABLE
 }

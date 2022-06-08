@@ -6,6 +6,7 @@ const lastName = Joi.string();
 const phone = Joi.string();
 const email = Joi.string().email();
 const password = Joi.string();
+const role = Joi.string();
 
 const createCustomerSchema = Joi.object({
   name: name.required(),
