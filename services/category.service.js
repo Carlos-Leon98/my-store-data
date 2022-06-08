@@ -26,16 +26,26 @@ class CategoryService {
   }
 
   async update(id, changes) {
-    return {
-      id,
-      changes,
-    };
+    const category = this.findOne(id);
+    if (!category) {
+      throw boom.notFound('Category not found');
+    }
+    const updatedCategory = category;
+    updatedCategory = {
+      ...category,
+      ...changes
+    }
+    return updatedCategory;
   }
 
   async delete(id) {
+    const category = this.findOne(id);
+    if (!category) {
+      throw boom.notFound('Category Not Found');
+    }
+    await category.destroy();
     return { id };
   }
-
 }
 
 module.exports = CategoryService;

@@ -36,35 +36,31 @@ class ProductsService {
   }
 
   async findOne(id) {
-    const product = this.products.find(item => item.id === id);
-    if (!product) {
-      throw boom.notFound('product not found');
-    }
-    if (product.isBlock) {
-      throw boom.conflict('product is block');
-    }
+    const product = await models.Product.findByPk(id, {
+      include: ['category']
+    });
     return product;
   }
 
   async update(id, changes) {
-    const index = this.products.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('product not found');
+    const product = this.findOne(id);
+    if (!product) {
+      throw boom.notFound('Product not found');
     }
-    const product = this.products[index];
-    this.products[index] = {
+    const updatedProduct = product;
+    updatedProduct = {
       ...product,
       ...changes
-    };
-    return this.products[index];
+    }
+    return updatedProduct;
   }
 
   async delete(id) {
-    const index = this.products.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('product not found');
+    const product = this.findOne(id);
+    if (!product) {
+      throw boom.notFound('Product Not Found');
     }
-    this.products.splice(index, 1);
+    await product.destroy();
     return { id };
   }
 
